@@ -9,3 +9,26 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Account {
+  id String @id @default(cuid())
+  name String @db.VarChar(40)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  workSession WorkSession[]
+
+  @@map("accounts")
+}
+
+model WorkSession {
+  id String @id @default(cuid())
+  accountId String
+  accounts Account @relation(fields: [accountId], references: [id])
+  startsOn DateTime? 
+  description String? @db.VarChar(120)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+@@map("workSessions")
+}
