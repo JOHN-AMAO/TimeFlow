@@ -1,6 +1,7 @@
 import connectToDb from "@/lib/mongodb";
 import IdeaModel from "@/models/ideas";
-import { NextResponse } from "next/server";
+import { NextApiRequest } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const { title, description } = await request.json();
@@ -24,4 +25,15 @@ export async function GET() {
       { status: 500 }
     );
   }
+}
+
+export async function DELETE(request: NextRequest) {
+  const id = request.nextUrl.searchParams.get("id");
+  await connectToDb();
+  await IdeaModel.findByIdAndDelete(id);
+
+  return NextResponse.json(
+    { message: "Idea deleted succesfully" },
+    { status: 200 }
+  );
 }
